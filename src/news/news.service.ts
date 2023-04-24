@@ -1,3 +1,4 @@
+import { CreateNewsDto } from './create.news.dto';
 import { Injectable } from '@nestjs/common';
 
 export interface News {
@@ -5,7 +6,7 @@ export interface News {
   title: string;
   description: string;
   author: string;
-  countView: number;
+  countView?: number;
 }
 
 function getRandomInt(min: number, max: number): number {
@@ -18,20 +19,23 @@ function getRandomInt(min: number, max: number): number {
 export class NewsService {
   private readonly news: News[] = [];
 
-  create(news: News): News {
-    const id = getRandomInt(0, 99999);
-    console.log(id);
-    const finalNews = {
-      ...news,
-      id: id,
-    };
-
-    this.news.push(finalNews);
-    return finalNews;
+  getAllNews(): News[] {
+    return this.news;
   }
 
   find(id: News['id']): News | undefined {
     return this.news.find((news: News) => news.id === id);
+  }
+
+  create(news: CreateNewsDto) {
+    const id = getRandomInt(0, 99999);
+    const finalNews: News = {
+      ...news,
+      id: id,
+    } as any as News;
+
+    this.news.push(finalNews);
+    return finalNews;
   }
 
   remove(id: News['id']): boolean {
